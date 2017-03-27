@@ -378,45 +378,6 @@ int Epetra_SerialDenseSVD::ComputeEquilibrateScaling(void) {
 //=============================================================================
 int Epetra_SerialDenseSVD::EquilibrateMatrix(void)
 {
-  int i, j;
-  int ierr = 0;
-
-  double DN = N_;
-  double DM = M_;
-
-  if (A_Equilibrated_) return(0); // Already done
-  if (R_==0) ierr = ComputeEquilibrateScaling(); // Compute R and C if needed
-  if (ierr!=0) EPETRA_CHK_ERR(ierr);
-  if (A_==AF_) {
-    double * ptr;
-    for (j=0; j<N_; j++) {
-      ptr = A_ + j*LDA_;
-      double s1 = C_[j];
-      for (i=0; i<M_; i++) {
-	*ptr = *ptr*s1*R_[i];
-	ptr++;
-      }
-    }
-    UpdateFlops(2.0*DM*DN);
-  }
-  else {
-    double * ptr;
-    double * ptr1;
-    for (j=0; j<N_; j++) {
-      ptr = A_ + j*LDA_;
-      ptr1 = AF_ + j*LDAF_;
-      double s1 = C_[j];
-      for (i=0; i<M_; i++) {
-	*ptr = *ptr*s1*R_[i];
-	ptr++;
-	*ptr1 = *ptr1*s1*R_[i];
-	ptr1++;
-      }
-    }
-    UpdateFlops(4.0*DM*DN);
-  }
-
-  A_Equilibrated_ = true;
 
   return(0);
 }
